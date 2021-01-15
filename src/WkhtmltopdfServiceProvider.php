@@ -33,11 +33,15 @@ class WkhtmltopdfServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(WkhtmltopdfClient::class, function () {
-            return new WkhtmltopdfClient(
+        $this->app->singleton(ApiClient::class, function () {
+            return new ApiClient(
                 Config::get('minuteman_wkhtmltopdf_client.endpoint_url', ''),
                 Config::get('minuteman_wkhtmltopdf_client.api_key', '')
             );
+        });
+
+        $this->app->bind(Wkhtmltopdf::class, function (Application $app) {
+            return new Wkhtmltopdf($app->make(ApiClient::class));
         });
     }
 
@@ -48,7 +52,7 @@ class WkhtmltopdfServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return [WkhtmltopdfClient::class];
+        return [Client::class];
     }
 
 

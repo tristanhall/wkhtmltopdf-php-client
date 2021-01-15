@@ -3,15 +3,15 @@
 namespace MinuteMan\WkhtmltopdfClient;
 
 use Exception;
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as HttpClient;
 
 /**
- * Class WkhtmltopdfClient
+ * Class ApiClient
  * Provides an interface for creating PDF files using the Wkhtmltopdf Microservice.
  *
  * @package MinuteMan\WkhtmltopdfClient
  */
-class WkhtmltopdfClient
+class ApiClient
 {
 
     /**
@@ -29,11 +29,11 @@ class WkhtmltopdfClient
     protected string $apiKey = '';
 
     /**
-     * The Guzzle Client instance for making requests to the API.
+     * The Guzzle Http Client instance for making requests to the API.
      *
-     * @var Client
+     * @var HttpClient
      */
-    protected Client $guzzle;
+    protected HttpClient $guzzle;
 
     /**
      * Initialize the basic properties.
@@ -43,8 +43,8 @@ class WkhtmltopdfClient
      */
     public function __construct(string $endpointUrl = '', string $apiKey = '')
     {
-        $this->endpointUrl = $endpointUrl;
-        $this->apiKey = $apiKey;
+        $this->setEndpointUrl($endpointUrl);
+        $this->setApiKey($apiKey);
     }
 
     /**
@@ -74,35 +74,35 @@ class WkhtmltopdfClient
     }
 
     /**
-     * Sets up a new instance of the Guzzle Client using the configured endpoint URL as the base_uri.
+     * Sets up a new instance of the Guzzle Http Client using the configured endpoint URL as the base_uri.
      *
      * @return $this
      */
     protected function setupGuzzleClient(): self
     {
-        $this->guzzle = new Client(['base_uri' => $this->endpointUrl]);
+        $this->guzzle = new HttpClient(['base_uri' => $this->endpointUrl]);
 
         return $this;
     }
 
     /**
-     * Returns the Guzzle Client instance. If the instance does not exist, then this function calls setupGuzzleClient()
+     * Returns the Guzzle Http Client instance. If the instance does not exist, then this function calls setupGuzzleClient()
      * to create one.
      *
      * @throws Exception
-     * @return Client
+     * @return HttpClient
      */
-    protected function getGuzzleClient(): Client
+    protected function getGuzzleClient(): HttpClient
     {
-        if ($this->guzzle instanceof Client) {
+        if ($this->guzzle instanceof HttpClient) {
             return $this->guzzle;
         } else {
             $this->setupGuzzleClient();
 
-            if ($this->guzzle instanceof Client) {
+            if ($this->guzzle instanceof HttpClient) {
                 return $this->guzzle;
             } else {
-                throw new Exception('Failed to setup Guzzle Client');
+                throw new Exception('Failed to setup Guzzle Http Client');
             }
         }
     }
