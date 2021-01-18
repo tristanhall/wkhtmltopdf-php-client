@@ -2,8 +2,10 @@
 
 namespace MinuteMan\WkhtmltopdfClient;
 
-use Exception;
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class ApiClient
@@ -27,13 +29,6 @@ class ApiClient
      * @var string
      */
     protected string $apiKey = '';
-
-    /**
-     * The Guzzle Http Client instance for making requests to the API.
-     *
-     * @var HttpClient
-     */
-    protected HttpClient $guzzle;
 
     /**
      * Initialize the basic properties.
@@ -74,37 +69,19 @@ class ApiClient
     }
 
     /**
-     * Sets up a new instance of the Guzzle Http Client using the configured endpoint URL as the base_uri.
-     *
-     * @return $this
+     * @param array $postData
+     * @throws GuzzleException
+     * @return ResponseInterface
      */
-    protected function setupGuzzleClient(): self
+    public function sendRequest(array $postData): ResponseInterface
     {
-        $this->guzzle = new HttpClient(['base_uri' => $this->endpointUrl]);
-
-        return $this;
-    }
-
-    /**
-     * Returns the Guzzle Http Client instance. If the instance does not exist, then this function calls setupGuzzleClient()
-     * to create one.
-     *
-     * @throws Exception
-     * @return HttpClient
-     */
-    protected function getGuzzleClient(): HttpClient
-    {
-        if ($this->guzzle instanceof HttpClient) {
-            return $this->guzzle;
-        } else {
-            $this->setupGuzzleClient();
-
-            if ($this->guzzle instanceof HttpClient) {
-                return $this->guzzle;
-            } else {
-                throw new Exception('Failed to setup Guzzle Http Client');
-            }
-        }
+        return (new HttpClient())->post($this->endpointUrl, [
+            RequestOptions::HEADERS => [
+                'User-Agent' => 'minutemanservices/mms-wkhtmltopdf-php-client',
+                'X-Api-Key'  => $this->apiKey,
+            ],
+            RequestOptions::JSON    => $postData,
+        ]);
     }
 
 }

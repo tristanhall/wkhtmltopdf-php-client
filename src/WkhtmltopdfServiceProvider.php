@@ -52,7 +52,7 @@ class WkhtmltopdfServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return [Client::class];
+        return [Wkhtmltopdf::class];
     }
 
 

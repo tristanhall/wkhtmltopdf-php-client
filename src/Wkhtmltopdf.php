@@ -2,8 +2,12 @@
 
 namespace MinuteMan\WkhtmltopdfClient;
 
+use BadMethodCallException;
+use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 /**
  * Class Wkhtmltopdf
@@ -55,16 +59,60 @@ class Wkhtmltopdf
         $this->apiClient = $apiClient;
     }
 
+    /**
+     * Override method calls to unknown functions to handle dynamic setting/unsetting of flags and options.
+     *
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     */
     public function __call($name, $arguments)
     {
+        // If a method call is received that starts with "set", try to determine if a flag or option is being adjusted
         if (substr($name, 0, 3) === 'set' && strlen($name) > 3) {
-            $flagName = strtoupper(Str::snake(substr($name, 3)));
+            $flagOptionName = strtoupper(Str::snake(substr($name, 3)));
 
-            // Handle flags in the form of method calls to "setFlagNameHere(true/false)"
-            if (PdfFlag::hasConst($flagName) && count($arguments) > 0) {
-                $isFlagEnabled = (bool)Arr::first($arguments);
+            // Handle flags in the form of method calls to "setFlagNameHere()"
+            if (PdfFlag::hasConst($flagOptionName) && count($arguments) === 0) {
+                return $this->addFlag(PdfFlag::$flagOptionName());
+            } else {
+                if (PdfOption::hasConst($flagOptionName) && count($arguments) > 0) {
+                    $optionValue = Arr::first($arguments);
 
-                $this->setFlag(PdfFlag::$flagName(), $isFlagEnabled);
+                    return $this->addOption(PdfOption::$flagOptionName(), $optionValue);
+                } else {
+                    throw new BadMethodCallException(sprintf('Method %s::%s not found.', __CLASS__, $name));
+                }
+            }
+        } else {
+            // If a method call is received that starts with "unset", try to determine if a flag or option is being removed
+            if (substr($name, 0, 5) === 'unset' && strlen($name) > 5) {
+                $flagOptionName = strtoupper(Str::snake(substr($name, 5)));
+
+                // Handle flags in the form of method calls to "unsetFlagNameHere()"
+                if (PdfFlag::hasConst($flagOptionName) && count($arguments) === 0) {
+                    return $this->removeFlag(PdfFlag::$flagOptionName());
+                } else {
+                    if (PdfOption::hasConst($flagOptionName) && count($arguments) === 0) {
+                        return $this->removeOption(PdfOption::$flagOptionName());
+                    } else {
+                        throw new BadMethodCallException(sprintf('Method %s::%s not found.', __CLASS__, $name));
+                    }
+                }
+            } else {
+                // If a method call is received that starts with "set", try to determine if the value of an option can be returned
+                if (substr($name, 0, 3) === 'get' && strlen($name) > 3) {
+                    $optionName = strtoupper(Str::snake(substr($name, 3)));
+
+                    // If the option exists, return the value. Null will be returned if the option is not yet configured.
+                    if (PdfOption::hasConst($optionName) && count($arguments) === 0) {
+                        return Arr::get($this->options, sprintf('%s.value', PdfOption::$optionName()->value()));
+                    } else {
+                        throw new BadMethodCallException(sprintf('Method %s::%s not found.', __CLASS__, $name));
+                    }
+                } else {
+                    throw new BadMethodCallException(sprintf('Method %s::%s not found.', __CLASS__, $name));
+                }
             }
         }
     }
@@ -146,37 +194,186 @@ class Wkhtmltopdf
     }
 
     /**
-     * Enable or disable a flag.
+     * Enable a flag.
      *
      * @param PdfFlag $flag
-     * @param bool    $isEnabled
      * @return $this
      */
-    public function setFlag(PdfFlag $flag, bool $isEnabled): self
+    public function addFlag(PdfFlag $flag): self
     {
-        Arr::set($this->flags, $flag->value(), $isEnabled);
+        Arr::set($this->flags, $flag->value(), true);
 
         return $this;
     }
 
     /**
+     * Disable a flag.
+     *
+     * @param PdfFlag $flag
+     * @return $this
+     */
+    public function removeFlag(PdfFlag $flag): self
+    {
+        Arr::set($this->flags, $flag->value(), false);
+
+        return $this;
+    }
+
+    /**
+     * Returns an array of all the enabled flags.
+     *
+     * @return array
+     */
+    public function getFlags(): array
+    {
+        $flags = [];
+
+        foreach ($this->flags as $flagName => $isEnabled) {
+            if ($isEnabled) {
+                array_push($flags, $flagName);
+            }
+        }
+
+        return $flags;
+    }
+
+    /**
+     * Add an option.
+     *
+     * @param PdfOption $option
+     * @param mixed     $value
+     * @throws InvalidArgumentException
+     * @return $this
+     */
+    public function addOption(PdfOption $option, $value): self
+    {
+        if ($option->isValidValue($value)) {
+            Arr::set($this->options, $option->value(), [
+                'enabled' => true,
+                'value'   => $value,
+            ]);
+
+            return $this;
+        } else {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid value "%s" provided for "%s"',
+                (string)$value,
+                $option->label()
+            ));
+        }
+    }
+
+    /**
+     * Disable an option.
+     *
+     * @param PdfOption $option
+     * @return $this
+     */
+    public function removeOption(PdfOption $option): self
+    {
+        Arr::set($this->options, $option->value(), [
+            'enabled' => false,
+            'value'   => null,
+        ]);
+
+        return $this;
+    }
+
+    /**
+     * Returns a key-value associative array of all the enabled options and their values.
+     *
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        $options = [];
+
+        foreach ($this->options as $key => $params) {
+            if ((bool)Arr::get($params, 'enabled', false) === true) {
+                $options[$key] = Arr::get($params, 'value');
+            }
+        }
+
+        return $options;
+    }
+
+    /**
+     * Returns an array of data to provide in the body of the request to the API.
+     *
+     * @return array[]
+     */
+    protected function makeRequestBody(): array
+    {
+        $bodyData = [
+            'flags'   => $this->getFlags(),
+            'options' => $this->getOptions(),
+        ];
+
+        // Set the HTML markup or URL value depending on what we have.
+        if ($this->hasHtmlMarkup()) {
+            $bodyData['html_markup'] = $this->getHtmlMarkup();
+        } else {
+            if ($this->hasUrl()) {
+                $bodyData['url'] = $this->getUrl();
+            } else {
+                throw new InvalidArgumentException('Either HTML markup or URL must be provided to generate a PDF.');
+            }
+        }
+
+        return $bodyData;
+    }
+
+    /**
      * Returns the Base64 encoded bytes of the PDF file.
      *
+     * @throws GuzzleException|Exception
      * @return string
      */
     public function getBase64Bytes(): string
     {
-        return '';
+        $apiResponse = $this->getApiClient()->sendRequest($this->makeRequestBody());
+
+        // Return the Base64 encoded bytes of the PDF or throw an exception if we do not get a 200 status code
+        if ($apiResponse->getStatusCode() === 200) {
+            return (string)$apiResponse->getBody()->getContents();
+        } else {
+            throw new Exception(sprintf(
+                'Unexpected Response: %d %s %s',
+                $apiResponse->getStatusCode(),
+                $apiResponse->getReasonPhrase(),
+                (string)$apiResponse->getBody()->getContents()
+            ));
+        }
     }
 
     /**
-     * @todo submit the API request, decode the base64 encoded response and save the output to a file.
+     * Request the PDF data and write the stream to a file.
+     *
      * @param string $path
+     * @throws GuzzleException|Exception
      * @return bool
      */
     public function saveFile(string $path): bool
     {
-        return true;
+        $apiResponse = $this->getApiClient()->sendRequest($this->makeRequestBody());
+
+        // Throw an exception if we do not get a 200 status code
+        if ($apiResponse->getStatusCode() === 200) {
+            $responseStream = $apiResponse->getBody()->detach();
+
+            // Base64 decode the stream data
+            stream_filter_append($responseStream, 'convert.base64-decode');
+
+            // Write the file to the provided path
+            return (bool)file_put_contents($path, $responseStream);
+        } else {
+            throw new Exception(sprintf(
+                'Unexpected Response: %d %s %s',
+                $apiResponse->getStatusCode(),
+                $apiResponse->getReasonPhrase(),
+                (string)$apiResponse->getBody()->getContents()
+            ));
+        }
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace MinuteMan\WkhtmltopdfClient;
 
+use Illuminate\Support\Arr;
 use Konekt\Enum\Enum;
 
 /**
@@ -114,6 +115,80 @@ class PdfFlag extends Enum
     const NO_HEADER_LINE = '--no-header-line';
 
     /**
+     * Array of flags that cannot be used with another flag.
+     *
+     * @var array
+     */
+    protected static $exclusions = [
+        self::BACKGROUND              => [
+            self::NO_BACKGROUND,
+        ],
+        self::NO_BACKGROUND           => [
+            self::BACKGROUND,
+        ],
+        self::DISABLE_EXTERNAL_LINKS  => [
+            self::ENABLE_EXTERNAL_LINKS,
+        ],
+        self::ENABLE_EXTERNAL_LINKS   => [
+            self::DISABLE_EXTERNAL_LINKS,
+        ],
+        self::DISABLE_FORMS           => [
+            self::ENABLE_FORMS,
+        ],
+        self::ENABLE_FORMS            => [
+            self::DISABLE_FORMS,
+        ],
+        self::IMAGES                  => [
+            self::NO_IMAGES,
+        ],
+        self::NO_IMAGES               => [
+            self::IMAGES,
+        ],
+        self::DISABLE_INTERNAL_LINKS  => [
+            self::ENABLE_INTERNAL_LINKS,
+        ],
+        self::ENABLE_INTERNAL_LINKS   => [
+            self::DISABLE_INTERNAL_LINKS,
+        ],
+        self::DISABLE_JAVASCRIPT      => [
+            self::ENABLE_JAVASCRIPT,
+        ],
+        self::ENABLE_JAVASCRIPT       => [
+            self::DISABLE_JAVASCRIPT,
+        ],
+        self::KEEP_RELATIVE_LINKS     => [
+            self::RESOLVE_RELATIVE_LINKS,
+        ],
+        self::RESOLVE_RELATIVE_LINKS  => [
+            self::KEEP_RELATIVE_LINKS,
+        ],
+        self::PRINT_MEDIA_TYPE        => [
+            self::NO_PRINT_MEDIA_TYPE,
+        ],
+        self::NO_PRINT_MEDIA_TYPE     => [
+            self::PRINT_MEDIA_TYPE,
+        ],
+        self::DISABLE_SMART_SHRINKING => [
+            self::ENABLE_SMART_SHRINKING,
+        ],
+        self::ENABLE_SMART_SHRINKING  => [
+            self::DISABLE_SMART_SHRINKING,
+        ],
+        self::FOOTER_LINE             => [
+            self::NO_FOOTER_LINE,
+        ],
+        self::NO_FOOTER_LINE          => [
+            self::FOOTER_LINE,
+        ],
+        self::HEADER_LINE             => [
+            self::NO_HEADER_LINE,
+        ],
+        self::NO_HEADER_LINE          => [
+            self::HEADER_LINE,
+        ],
+    ];
+
+    /**
      * Array of "human-friendly" labels for each flag.
      *
      * @var array|string[]
@@ -145,5 +220,25 @@ class PdfFlag extends Enum
         self::HEADER_LINE             => 'Header Line',
         self::NO_HEADER_LINE          => 'No Header Line',
     ];
+
+    /**
+     * Returns true if the current flag has 1 or more excluded flags that cannot be used with it.
+     *
+     * @return bool
+     */
+    public function hasExclusions(): bool
+    {
+        return count($this->getExclusions()) > 0;
+    }
+
+    /**
+     * Returns the array of flags that cannot be used with the current flag.
+     *
+     * @return array
+     */
+    public function getExclusions(): array
+    {
+        return Arr::wrap(Arr::get(self::$exclusions, $this->value(), []));
+    }
 
 }
