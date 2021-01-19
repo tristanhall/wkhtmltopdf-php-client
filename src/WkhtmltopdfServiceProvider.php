@@ -22,7 +22,7 @@ class WkhtmltopdfServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../../config/minuteman_wkhtmltopdf_client.php' => $this->app->configPath('minuteman_wkhtmltopdf_client.php'),
+            __DIR__ . '/config/minuteman_wkhtmltopdf_client.php' => $this->app->configPath('minuteman_wkhtmltopdf_client.php'),
         ]);
     }
 

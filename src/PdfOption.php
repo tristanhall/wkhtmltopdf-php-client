@@ -342,7 +342,7 @@ class PdfOption extends Enum
     public function isValidValue($value): bool
     {
         // Create translator instance for validation messages
-        $langPath = sprintf('%s/lang', __DIR__);
+        $langPath = sprintf('%s/resources/lang', __DIR__);
         $translator = new Translator(new FileLoader(new Filesystem, $langPath), 'en');
 
         // Create the validator
