@@ -3,11 +3,12 @@
 namespace MinuteMan\WkhtmltopdfClient;
 
 use BadMethodCallException;
-use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use JsonException;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Wkhtmltopdf
@@ -302,7 +303,7 @@ class Wkhtmltopdf
      *
      * @return array[]
      */
-    protected function makeRequestBody(): array
+    protected function getParams(): array
     {
         $bodyData = [
             'flags'   => $this->getFlags(),
@@ -324,56 +325,42 @@ class Wkhtmltopdf
     }
 
     /**
-     * Returns the Base64 encoded bytes of the PDF file.
+     * Creates the API request and sends it. Returns a ResponseInterface object if a 200 status code is received.
      *
-     * @throws GuzzleException|Exception
-     * @return string
+     * @throws GuzzleException|JsonException
+     * @return ResponseInterface
      */
-    public function getBase64Bytes(): string
+    protected function getApiResponse(): ResponseInterface
     {
-        $apiResponse = $this->getApiClient()->sendRequest($this->makeRequestBody());
+        return $this->getApiClient()->sendRequest($this->getApiClient()->makeRequest($this->getParams()));
+    }
 
-        // Return the Base64 encoded bytes of the PDF or throw an exception if we do not get a 200 status code
-        if ($apiResponse->getStatusCode() === 200) {
-            return (string)$apiResponse->getBody()->getContents();
-        } else {
-            throw new Exception(sprintf(
-                'Unexpected Response: %d %s %s',
-                $apiResponse->getStatusCode(),
-                $apiResponse->getReasonPhrase(),
-                (string)$apiResponse->getBody()->getContents()
-            ));
-        }
+    /**
+     * Returns a stream resource of the API response with automatic Base64 decoding of the content.
+     *
+     * @throws JsonException|GuzzleException
+     * @return resource|null
+     */
+    public function getStream()
+    {
+        $byteStream = $this->getApiResponse()->getBody()->detach();
+
+        // Base64 decode the stream data
+        stream_filter_append($byteStream, 'convert.base64-decode');
+
+        return $byteStream;
     }
 
     /**
      * Request the PDF data and write the stream to a file.
      *
      * @param string $path
-     * @throws GuzzleException|Exception
+     * @throws JsonException|GuzzleException
      * @return bool
      */
     public function saveFile(string $path): bool
     {
-        $apiResponse = $this->getApiClient()->sendRequest($this->makeRequestBody());
-
-        // Throw an exception if we do not get a 200 status code
-        if ($apiResponse->getStatusCode() === 200) {
-            $responseStream = $apiResponse->getBody()->detach();
-
-            // Base64 decode the stream data
-            stream_filter_append($responseStream, 'convert.base64-decode');
-
-            // Write the file to the provided path
-            return (bool)file_put_contents($path, $responseStream);
-        } else {
-            throw new Exception(sprintf(
-                'Unexpected Response: %d %s %s',
-                $apiResponse->getStatusCode(),
-                $apiResponse->getReasonPhrase(),
-                (string)$apiResponse->getBody()->getContents()
-            ));
-        }
+        return (bool)file_put_contents($path, $this->getStream());
     }
 
 }

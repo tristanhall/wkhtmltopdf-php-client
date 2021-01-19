@@ -55,5 +55,4 @@ class WkhtmltopdfServiceProvider extends ServiceProvider
         return [Wkhtmltopdf::class];
     }
 
-
 }
