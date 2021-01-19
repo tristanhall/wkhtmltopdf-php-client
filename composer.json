@@ -2,8 +2,8 @@
   "name": "minutemanservices/mms-wkhtmltopdf-php-client",
   "description": "PHP Client Library for generating PDFs from HTML using our Wkhtmltopdf Microservice",
   "type": "library",
-  "license": "GNU AGPLv3",
-  "version": "0.2.0",
+  "license": "AGPL-3.0-only",
+  "version": "0.2.1",
   "homepage": "https://bitbucket.org/minutemanservices/mms-wkhtmltopdf-php-client",
   "authors": [
     {
