@@ -10,7 +10,7 @@ use Illuminate\Validation\Factory;
 use Konekt\Enum\Enum;
 
 /**
- * Class PdfOption
+ * Class WkhtmltopdfOption
  *
  * @package MinuteMan\WkhtmltopdfClient
  * @property bool $is_dpi
@@ -116,7 +116,7 @@ use Konekt\Enum\Enum;
  * @method static self PAGE_OFFSET()
  * @method static self MINIMUM_FONT_SIZE()
  */
-class PdfOption extends Enum
+class WkhtmltopdfOption extends Enum
 {
 
     const DPI = '--dpi';

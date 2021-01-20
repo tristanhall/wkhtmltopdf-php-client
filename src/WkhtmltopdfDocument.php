@@ -11,12 +11,12 @@ use JsonException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class Wkhtmltopdf
+ * Class WkhtmltopdfDocument
  * An instance of a PDF that contains markup, flags, and options that can be sent to the Wkhtmltopdf Microservice.
  *
  * @package MinuteMan\WkhtmltopdfClient
  */
-class Wkhtmltopdf
+class WkhtmltopdfDocument
 {
 
     /**
@@ -74,13 +74,13 @@ class Wkhtmltopdf
             $flagOptionName = strtoupper(Str::snake(substr($name, 3)));
 
             // Handle flags in the form of method calls to "setFlagNameHere()"
-            if (PdfFlag::hasConst($flagOptionName) && count($arguments) === 0) {
-                return $this->addFlag(PdfFlag::$flagOptionName());
+            if (WkhtmltopdfFlag::hasConst($flagOptionName) && count($arguments) === 0) {
+                return $this->addFlag(WkhtmltopdfFlag::$flagOptionName());
             } else {
-                if (PdfOption::hasConst($flagOptionName) && count($arguments) > 0) {
+                if (WkhtmltopdfOption::hasConst($flagOptionName) && count($arguments) > 0) {
                     $optionValue = Arr::first($arguments);
 
-                    return $this->addOption(PdfOption::$flagOptionName(), $optionValue);
+                    return $this->addOption(WkhtmltopdfOption::$flagOptionName(), $optionValue);
                 } else {
                     throw new BadMethodCallException(sprintf('Method %s::%s not found.', __CLASS__, $name));
                 }
@@ -91,11 +91,11 @@ class Wkhtmltopdf
                 $flagOptionName = strtoupper(Str::snake(substr($name, 5)));
 
                 // Handle flags in the form of method calls to "unsetFlagNameHere()"
-                if (PdfFlag::hasConst($flagOptionName) && count($arguments) === 0) {
-                    return $this->removeFlag(PdfFlag::$flagOptionName());
+                if (WkhtmltopdfFlag::hasConst($flagOptionName) && count($arguments) === 0) {
+                    return $this->removeFlag(WkhtmltopdfFlag::$flagOptionName());
                 } else {
-                    if (PdfOption::hasConst($flagOptionName) && count($arguments) === 0) {
-                        return $this->removeOption(PdfOption::$flagOptionName());
+                    if (WkhtmltopdfOption::hasConst($flagOptionName) && count($arguments) === 0) {
+                        return $this->removeOption(WkhtmltopdfOption::$flagOptionName());
                     } else {
                         throw new BadMethodCallException(sprintf('Method %s::%s not found.', __CLASS__, $name));
                     }
@@ -106,8 +106,8 @@ class Wkhtmltopdf
                     $optionName = strtoupper(Str::snake(substr($name, 3)));
 
                     // If the option exists, return the value. Null will be returned if the option is not yet configured.
-                    if (PdfOption::hasConst($optionName) && count($arguments) === 0) {
-                        return Arr::get($this->options, sprintf('%s.value', PdfOption::$optionName()->value()));
+                    if (WkhtmltopdfOption::hasConst($optionName) && count($arguments) === 0) {
+                        return Arr::get($this->options, sprintf('%s.value', WkhtmltopdfOption::$optionName()->value()));
                     } else {
                         throw new BadMethodCallException(sprintf('Method %s::%s not found.', __CLASS__, $name));
                     }
@@ -197,10 +197,10 @@ class Wkhtmltopdf
     /**
      * Enable a flag.
      *
-     * @param PdfFlag $flag
+     * @param WkhtmltopdfFlag $flag
      * @return $this
      */
-    public function addFlag(PdfFlag $flag): self
+    public function addFlag(WkhtmltopdfFlag $flag): self
     {
         Arr::set($this->flags, $flag->value(), true);
 
@@ -208,14 +208,48 @@ class Wkhtmltopdf
     }
 
     /**
-     * Disable a flag.
+     * Add multiple flags at once.
      *
-     * @param PdfFlag $flag
+     * @param array $flagNames
      * @return $this
      */
-    public function removeFlag(PdfFlag $flag): self
+    public function addFlags(array $flagNames): self
+    {
+        foreach ($flagNames as $flagName) {
+            if (is_string($flagName) && WkhtmltopdfFlag::hasConst($flagName)) {
+                $this->addFlag(WkhtmltopdfFlag::create($flagName));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Disable a flag.
+     *
+     * @param WkhtmltopdfFlag $flag
+     * @return $this
+     */
+    public function removeFlag(WkhtmltopdfFlag $flag): self
     {
         Arr::set($this->flags, $flag->value(), false);
+
+        return $this;
+    }
+
+    /**
+     * Remove multiple flags at once.
+     *
+     * @param array $flagNames
+     * @return $this
+     */
+    public function removeFlags(array $flagNames): self
+    {
+        foreach ($flagNames as $flagName) {
+            if (is_string($flagName) && WkhtmltopdfFlag::hasConst($flagName)) {
+                $this->removeFlag(WkhtmltopdfFlag::create($flagName));
+            }
+        }
 
         return $this;
     }
@@ -241,12 +275,12 @@ class Wkhtmltopdf
     /**
      * Add an option.
      *
-     * @param PdfOption $option
-     * @param mixed     $value
+     * @param WkhtmltopdfOption $option
+     * @param mixed             $value
      * @throws InvalidArgumentException
      * @return $this
      */
-    public function addOption(PdfOption $option, $value): self
+    public function addOption(WkhtmltopdfOption $option, $value): self
     {
         if ($option->isValidValue($value)) {
             Arr::set($this->options, $option->value(), [
@@ -265,17 +299,51 @@ class Wkhtmltopdf
     }
 
     /**
-     * Disable an option.
+     * Set multiple options at once.
      *
-     * @param PdfOption $option
+     * @param array $options
      * @return $this
      */
-    public function removeOption(PdfOption $option): self
+    public function addOptions(array $options): self
+    {
+        foreach ($options as $optionName => $optionValue) {
+            if (is_string($optionName) && WkhtmltopdfOption::hasConst($optionName)) {
+                $this->addOption(WkhtmltopdfOption::create($optionName), $optionValue);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Disable an option.
+     *
+     * @param WkhtmltopdfOption $option
+     * @return $this
+     */
+    public function removeOption(WkhtmltopdfOption $option): self
     {
         Arr::set($this->options, $option->value(), [
             'enabled' => false,
             'value'   => null,
         ]);
+
+        return $this;
+    }
+
+    /**
+     * Remove multiple options at once.
+     *
+     * @param array $optionNames
+     * @return $this
+     */
+    public function removeOptions(array $optionNames): self
+    {
+        foreach ($optionNames as $optionName) {
+            if (is_string($optionName) && WkhtmltopdfOption::hasConst($optionName)) {
+                $this->removeOption(WkhtmltopdfOption::create($optionName));
+            }
+        }
 
         return $this;
     }
@@ -303,7 +371,7 @@ class Wkhtmltopdf
      *
      * @return array[]
      */
-    protected function getParams(): array
+    public function getParams(): array
     {
         $bodyData = [
             'flags'   => $this->getFlags(),
@@ -330,7 +398,7 @@ class Wkhtmltopdf
      * @throws GuzzleException|JsonException
      * @return ResponseInterface
      */
-    protected function getApiResponse(): ResponseInterface
+    public function getApiResponse(): ResponseInterface
     {
         return $this->getApiClient()->sendRequest($this->getApiClient()->makeRequest($this->getParams()));
     }

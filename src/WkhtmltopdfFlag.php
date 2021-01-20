@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Konekt\Enum\Enum;
 
 /**
- * Class PdfFlag
+ * Class WkhtmltopdfFlag
  *
  * @package MinuteMan\WkhtmltopdfClient
  * @property bool $is_grayscale
@@ -85,7 +85,7 @@ use Konekt\Enum\Enum;
  * @method static self HEADER_LINE()
  * @method static self NO_HEADER_LINE()
  */
-class PdfFlag extends Enum
+class WkhtmltopdfFlag extends Enum
 {
 
     const GRAYSCALE = '--grayscale';

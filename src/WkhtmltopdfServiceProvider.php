@@ -40,8 +40,8 @@ class WkhtmltopdfServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->bind(Wkhtmltopdf::class, function (Application $app) {
-            return new Wkhtmltopdf($app->make(ApiClient::class));
+        $this->app->bind(WkhtmltopdfDocument::class, function (Application $app) {
+            return new WkhtmltopdfDocument($app->make(ApiClient::class));
         });
     }
 
@@ -52,7 +52,7 @@ class WkhtmltopdfServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return [Wkhtmltopdf::class];
+        return [WkhtmltopdfDocument::class];
     }
 
 }
