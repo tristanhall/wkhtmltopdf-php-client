@@ -1,10 +1,10 @@
 {
-  "name": "minutemanservices/mms-wkhtmltopdf-php-client",
+  "name": "minutemanservices/wkhtmltopdf-php-client",
   "description": "PHP Client Library for generating PDFs from HTML using our Wkhtmltopdf Microservice",
   "type": "library",
   "license": "AGPL-3.0-only",
-  "version": "0.2.4",
-  "homepage": "https://bitbucket.org/minutemanservices/mms-wkhtmltopdf-php-client",
+  "version": "0.2.5",
+  "homepage": "https://github.com/minutemanservices/wkhtmltopdf-php-client",
   "authors": [
     {
       "name": "Tristan Hall",
