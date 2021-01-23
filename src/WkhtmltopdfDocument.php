@@ -2,8 +2,10 @@
 
 namespace MinuteMan\WkhtmltopdfClient;
 
+use BadFunctionCallException;
 use BadMethodCallException;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -39,6 +41,13 @@ class WkhtmltopdfDocument
      * @var string|null
      */
     protected ?string $htmlMarkup = null;
+
+    /**
+     * View instance for generating HTML markup to use for the PDF.
+     *
+     * @var View|null
+     */
+    protected ?View $view = null;
 
     /**
      * @var array
@@ -192,6 +201,50 @@ class WkhtmltopdfDocument
     public function hasHtmlMarkup(): bool
     {
         return !empty($this->htmlMarkup) && is_string($this->htmlMarkup);
+    }
+
+    /**
+     * Set the path to the template where the markup resides and any data to include with the view.
+     * Throws BadFunctionCallException if the view() helper function is missing.
+     *
+     * @param string|null $view
+     * @param array  $data
+     * @param array  $mergeData
+     * @return $this
+     */
+    public function setView(?string $view, array $data = [], array $mergeData = []): self
+    {
+        if (function_exists('view')) {
+            if (is_null($view)) {
+                $this->view = null;
+            } else {
+                $this->view = view($view, $data, $mergeData);
+            }
+        } else {
+            throw new BadFunctionCallException('The view() helper method is missing. Using views to generate HTML markup requires the view() helper method.');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Return the instance of the View used to generate markup for the PDF.
+     *
+     * @return View|null
+     */
+    public function getView(): ?View
+    {
+        return $this->view;
+    }
+
+    /**
+     * Returns true if the $view property is not empty and is an instance of the View contract.
+     *
+     * @return bool
+     */
+    public function hasView(): bool
+    {
+        return !empty($this->view) && ($this->view instanceof View);
     }
 
     /**
@@ -385,7 +438,11 @@ class WkhtmltopdfDocument
             if ($this->hasUrl()) {
                 $bodyData['url'] = $this->getUrl();
             } else {
-                throw new InvalidArgumentException('Either HTML markup or URL must be provided to generate a PDF.');
+                if ($this->hasView()) {
+                    $bodyData['html_markup'] = $this->getView()->render();
+                } else {
+                    throw new InvalidArgumentException('No View, HTML markup or URL must be provided to generate a PDF.');
+                }
             }
         }
 
