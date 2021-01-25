@@ -90,7 +90,7 @@ class WkhtmltopdfFlag extends Enum
 
     const GRAYSCALE = '--grayscale';
     const NO_PDF_COMPRESSION = '--no-pdf-compression';
-    const LOW_QUALITY = '--low-quality';
+    const LOW_QUALITY = '--lowquality';
     const BACKGROUND = '--background';
     const NO_BACKGROUND = '--no-background';
     const DISABLE_EXTERNAL_LINKS = '--disable-external-links';
@@ -119,7 +119,7 @@ class WkhtmltopdfFlag extends Enum
      *
      * @var array
      */
-    protected static $exclusions = [
+    protected static array $exclusions = [
         self::BACKGROUND              => [
             self::NO_BACKGROUND,
         ],

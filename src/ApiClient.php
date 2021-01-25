@@ -21,7 +21,7 @@ class ApiClient
 
     const USER_AGENT = 'mms-wkhtmltopdf-php-client';
 
-    const VERSION = '0.2.7';
+    const VERSION = '0.2.8';
 
     /**
      * The API URL to use for HTTP requests.
