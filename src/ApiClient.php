@@ -21,7 +21,7 @@ class ApiClient
 
     const USER_AGENT = 'mms-wkhtmltopdf-php-client';
 
-    const VERSION = '0.2.8';
+    const VERSION = '0.2.9';
 
     /**
      * The API URL to use for HTTP requests.
@@ -90,6 +90,7 @@ class ApiClient
             [
                 'User-Agent' => sprintf('%s/%s', self::USER_AGENT, self::VERSION),
                 'X-Api-Key'  => $this->apiKey,
+                'Accept'     => 'application/pdf',
             ],
             json_encode($postData, JSON_THROW_ON_ERROR)
         );
