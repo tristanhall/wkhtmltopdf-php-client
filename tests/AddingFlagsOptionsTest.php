@@ -1423,7 +1423,7 @@ class AddingFlagsOptionsTest extends TestCase
         $doc->unsetReplace();
         $request = $doc->getApiClient()->makeRequest($doc->getParams());
         $body = json_decode($request->getBody()->getContents());
-        
+
         $this->assertNotContains('--replace', $body->options);
     }
 
