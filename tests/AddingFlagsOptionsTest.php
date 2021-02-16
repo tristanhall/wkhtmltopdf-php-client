@@ -71,7 +71,6 @@ class AddingFlagsOptionsTest extends TestCase
         $request = $doc->getApiClient()->makeRequest($doc->getParams());
         $body = json_decode($request->getBody()->getContents());
 
-        print_r($body);
         $this->assertContains('--lowquality', $body->flags);
     }
 
@@ -1419,12 +1418,12 @@ class AddingFlagsOptionsTest extends TestCase
     {
         $doc = new WkhtmltopdfDocument($this->apiClient);
         $doc->setHtmlMarkup('<body></body>');
-        $optionValue = true;
+        $optionValue = '';
         $doc->setReplace($optionValue);
         $doc->unsetReplace();
         $request = $doc->getApiClient()->makeRequest($doc->getParams());
         $body = json_decode($request->getBody()->getContents());
-
+        
         $this->assertNotContains('--replace', $body->options);
     }
 
