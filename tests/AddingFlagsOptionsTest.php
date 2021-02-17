@@ -27,17 +27,41 @@ class AddingFlagsOptionsTest extends TestCase
     }
 
     /**
+     * Create a new instance of WkhtmltopdfDocument and set HTML markup.
+     * 
+     * @return WkhtmltopdfDocument
+     */
+    protected function getDocumentInstance(): WkhtmltopdfDocument
+    {
+        $doc = new WkhtmltopdfDocument($this->apiClient);
+        $doc->setHtmlMarkup('<body></body>');
+        
+        return $doc;
+    }
+
+    /**
+     * Gets the decoded JSON body from the request that a document generates.
+     *
+     * @param WkhtmltopdfDocument $doc
+     * @return mixed
+     * @throws JsonException
+     */
+    protected function getRequestBodyFromDoc(WkhtmltopdfDocument $doc)
+    {
+        $request = $doc->getApiClient()->makeRequest($doc->getParams());
+        return json_decode($request->getBody()->getContents());
+    }
+
+    /**
      * Test for setGrayscale()
      *
      * @throws JsonException
      */
     public function testSetGrayscale()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setGrayscale();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--grayscale', $body->flags);
     }
@@ -49,11 +73,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetNoPdfCompression()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoPdfCompression();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--no-pdf-compression', $body->flags);
     }
@@ -65,11 +87,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetLowQuality()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setLowQuality();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--lowquality', $body->flags);
     }
@@ -81,11 +101,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetBackground()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setBackground();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--background', $body->flags);
     }
@@ -97,11 +115,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetNoBackground()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoBackground();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--no-background', $body->flags);
     }
@@ -113,11 +129,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetDisableExternalLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setDisableExternalLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--disable-external-links', $body->flags);
     }
@@ -129,11 +143,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetEnableExternalLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setEnableExternalLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--enable-external-links', $body->flags);
     }
@@ -145,11 +157,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetDisableForms()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setDisableForms();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--disable-forms', $body->flags);
     }
@@ -161,11 +171,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetEnableForms()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setEnableForms();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--enable-forms', $body->flags);
     }
@@ -177,11 +185,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetImages()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setImages();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--images', $body->flags);
     }
@@ -193,11 +199,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetNoImages()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoImages();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--no-images', $body->flags);
     }
@@ -209,11 +213,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetDisableInternalLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setDisableInternalLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--disable-internal-links', $body->flags);
     }
@@ -225,11 +227,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetEnableInternalLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setEnableInternalLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--enable-internal-links', $body->flags);
     }
@@ -241,11 +241,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetDisableJavascript()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setDisableJavascript();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--disable-javascript', $body->flags);
     }
@@ -257,11 +255,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetEnableJavascript()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setEnableJavascript();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--enable-javascript', $body->flags);
     }
@@ -273,11 +269,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetKeepRelativeLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setKeepRelativeLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--keep-relative-links', $body->flags);
     }
@@ -289,11 +283,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetResolveRelativeLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setResolveRelativeLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--resolve-relative-links', $body->flags);
     }
@@ -305,11 +297,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetPrintMediaType()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setPrintMediaType();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--print-media-type', $body->flags);
     }
@@ -321,11 +311,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetNoPrintMediaType()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoPrintMediaType();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--no-print-media-type', $body->flags);
     }
@@ -337,11 +325,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetDisableSmartShrinking()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setDisableSmartShrinking();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--disable-smart-shrinking', $body->flags);
     }
@@ -353,11 +339,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetEnableSmartShrinking()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setEnableSmartShrinking();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--enable-smart-shrinking', $body->flags);
     }
@@ -369,11 +353,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetFooterLine()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setFooterLine();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--footer-line', $body->flags);
     }
@@ -385,11 +367,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetNoFooterLine()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoFooterLine();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--no-footer-line', $body->flags);
     }
@@ -401,11 +381,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetHeaderLine()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setHeaderLine();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--header-line', $body->flags);
     }
@@ -417,11 +395,9 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testSetNoHeaderLine()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoHeaderLine();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertContains('--no-header-line', $body->flags);
     }
@@ -433,12 +409,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetGrayscale()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setGrayscale();
         $doc->unsetGrayscale();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--grayscale', $body->flags);
     }
@@ -450,12 +424,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetNoPdfCompression()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoPdfCompression();
         $doc->unsetNoPdfCompression();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--no-pdf-compression', $body->flags);
     }
@@ -467,12 +439,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetLowQuality()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setLowQuality();
         $doc->unsetLowQuality();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--low-quality', $body->options);
     }
@@ -484,12 +454,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetBackground()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setBackground();
         $doc->unsetBackground();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--background', $body->flags);
     }
@@ -501,12 +469,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetNoBackground()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoBackground();
         $doc->unsetNoBackground();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--no-background', $body->flags);
     }
@@ -518,12 +484,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetDisableExternalLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setDisableExternalLinks();
         $doc->unsetDisableExternalLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--disable-external-links', $body->flags);
     }
@@ -535,12 +499,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetEnableExternalLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setEnableExternalLinks();
         $doc->unsetEnableExternalLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--enable-external-links', $body->flags);
     }
@@ -552,12 +514,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetDisableForms()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setDisableForms();
         $doc->unsetDisableForms();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--disable-forms', $body->flags);
     }
@@ -569,12 +529,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetEnableForms()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setEnableForms();
         $doc->unsetEnableForms();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--enable-forms', $body->flags);
     }
@@ -586,12 +544,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetImages()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setImages();
         $doc->unsetImages();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--images', $body->flags);
     }
@@ -603,12 +559,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetNoImages()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoImages();
         $doc->unsetNoImages();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--no-images', $body->flags);
     }
@@ -620,12 +574,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetDisableInternalLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setDisableInternalLinks();
         $doc->unsetDisableInternalLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--disable-internal-links', $body->flags);
     }
@@ -637,12 +589,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetEnableInternalLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setEnableInternalLinks();
         $doc->unsetEnableInternalLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--enable-internal-links', $body->flags);
     }
@@ -654,12 +604,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetDisableJavascript()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setDisableJavascript();
         $doc->unsetDisableJavascript();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--disable-javascript', $body->flags);
     }
@@ -671,12 +619,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetEnableJavascript()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setEnableJavascript();
         $doc->unsetEnableJavascript();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--enable-javascript', $body->flags);
     }
@@ -688,12 +634,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetKeepRelativeLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setKeepRelativeLinks();
         $doc->unsetKeepRelativeLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--keep-relative-links', $body->flags);
     }
@@ -705,12 +649,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetResolveRelativeLinks()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setResolveRelativeLinks();
         $doc->unsetResolveRelativeLinks();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--resolve-relative-links', $body->flags);
     }
@@ -722,12 +664,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetPrintMediaType()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setPrintMediaType();
         $doc->unsetPrintMediaType();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--print-media-type', $body->flags);
     }
@@ -739,12 +679,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetNoPrintMediaType()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoPrintMediaType();
         $doc->unsetNoPrintMediaType();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--no-print-media-type', $body->flags);
     }
@@ -756,12 +694,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetDisableSmartShrinking()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setDisableSmartShrinking();
         $doc->unsetDisableSmartShrinking();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--disable-smart-shrinking', $body->flags);
     }
@@ -773,12 +709,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetEnableSmartShrinking()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setEnableSmartShrinking();
         $doc->unsetEnableSmartShrinking();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--enable-smart-shrinking', $body->flags);
     }
@@ -790,12 +724,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetFooterLine()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setFooterLine();
         $doc->unsetFooterLine();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--footer-line', $body->flags);
     }
@@ -807,12 +739,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetNoFooterLine()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoFooterLine();
         $doc->unsetNoFooterLine();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--no-footer-line', $body->flags);
     }
@@ -824,12 +754,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetHeaderLine()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setHeaderLine();
         $doc->unsetHeaderLine();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--header-line', $body->flags);
     }
@@ -841,12 +769,10 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetNoHeaderLine()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $doc->setNoHeaderLine();
         $doc->unsetNoHeaderLine();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--no-header-line', $body->flags);
     }
@@ -858,13 +784,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetDpi()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 20;
         $doc->setDpi($optionValue);
         $doc->unsetDpi();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--dpi', $body->options);
     }
@@ -876,13 +800,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetImageDpi()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 20;
         $doc->setImageDpi($optionValue);
         $doc->unsetImageDpi();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--image-dpi', $body->options);
     }
@@ -894,13 +816,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetImageQuality()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 20;
         $doc->setImageQuality($optionValue);
         $doc->unsetImageQuality();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--image-quality', $body->options);
     }
@@ -912,13 +832,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetMarginBottom()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setMarginBottom($optionValue);
         $doc->unsetMarginBottom();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--margin-bottom', $body->options);
     }
@@ -930,13 +848,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetMarginLeft()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setMarginLeft($optionValue);
         $doc->unsetMarginLeft();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--margin-left', $body->options);
     }
@@ -948,13 +864,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetMarginTop()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setMarginTop($optionValue);
         $doc->unsetMarginTop();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--margin-top', $body->options);
     }
@@ -966,13 +880,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetMarginRight()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setMarginRight($optionValue);
         $doc->unsetMarginRight();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--margin-right', $body->options);
     }
@@ -984,13 +896,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetOrientation()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setOrientation($optionValue);
         $doc->unsetOrientation();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--orientation', $body->options);
     }
@@ -1002,13 +912,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetPageWidth()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'A1';
         $doc->setPageWidth($optionValue);
         $doc->unsetPageWidth();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--page-width', $body->options);
     }
@@ -1020,13 +928,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetPageHeight()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setPageHeight($optionValue);
         $doc->unsetPageHeight();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--page-height', $body->options);
     }
@@ -1038,13 +944,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetPageSize()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'A1';
         $doc->setPageSize($optionValue);
         $doc->unsetPageSize();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--page-size', $body->options);
     }
@@ -1056,13 +960,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetTitle()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'Test';
         $doc->setTitle($optionValue);
         $doc->unsetTitle();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--title', $body->options);
     }
@@ -1074,13 +976,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetEncoding()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'utf-8';
         $doc->setEncoding($optionValue);
         $doc->unsetEncoding();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--encoding', $body->options);
     }
@@ -1092,13 +992,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetJavascriptDelay()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setJavascriptDelay($optionValue);
         $doc->unsetJavascriptDelay();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--javascript-delay', $body->options);
     }
@@ -1110,13 +1008,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetUserStyleSheet()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setUserStyleSheet($optionValue);
         $doc->unsetUserStyleSheet();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--user-style-sheet', $body->options);
     }
@@ -1128,13 +1024,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetViewportSize()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setViewportSize($optionValue);
         $doc->unsetViewportSize();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--viewport-size', $body->options);
     }
@@ -1146,13 +1040,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetZoom()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 50;
         $doc->setZoom($optionValue);
         $doc->unsetZoom();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--zoom', $body->options);
     }
@@ -1164,13 +1056,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetFooterCenter()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setFooterCenter($optionValue);
         $doc->unsetFooterCenter();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--footer-center', $body->options);
     }
@@ -1182,13 +1072,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetFooterFontName()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setFooterFontName($optionValue);
         $doc->unsetFooterFontName();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--footer-font-name', $body->options);
     }
@@ -1200,13 +1088,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetFooterFontSize()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setFooterFontSize($optionValue);
         $doc->unsetFooterFontSize();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--footer-font-size', $body->options);
     }
@@ -1218,13 +1104,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetFooterHtml()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = '<body></body>';
         $doc->setFooterHtml($optionValue);
         $doc->unsetFooterHtml();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--footer-html', $body->options);
     }
@@ -1236,13 +1120,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetFooterLeft()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'Test';
         $doc->setFooterLeft($optionValue);
         $doc->unsetFooterLeft();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--footer-left', $body->options);
     }
@@ -1254,13 +1136,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetFooterRight()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setFooterRight($optionValue);
         $doc->unsetFooterRight();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--footer-right', $body->options);
     }
@@ -1272,13 +1152,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetFooterSpacing()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setFooterSpacing($optionValue);
         $doc->unsetFooterSpacing();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--footer-spacing', $body->options);
     }
@@ -1290,13 +1168,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetHeaderCenter()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setHeaderCenter($optionValue);
         $doc->unsetHeaderCenter();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--header-center', $body->options);
     }
@@ -1308,13 +1184,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetHeaderFontName()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setHeaderFontName($optionValue);
         $doc->unsetHeaderFontName();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--header-font-name', $body->options);
     }
@@ -1326,13 +1200,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetHeaderFontSize()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setHeaderFontSize($optionValue);
         $doc->unsetHeaderFontSize();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--header-font-size', $body->options);
     }
@@ -1344,13 +1216,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetHeaderHtml()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = '<body></body>';
         $doc->setHeaderHtml($optionValue);
         $doc->unsetHeaderHtml();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--header-html', $body->options);
     }
@@ -1362,13 +1232,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetHeaderLeft()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setHeaderLeft($optionValue);
         $doc->unsetHeaderLeft();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--header-left', $body->options);
     }
@@ -1380,13 +1248,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetHeaderRight()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setHeaderRight($optionValue);
         $doc->unsetHeaderRight();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--header-right', $body->options);
     }
@@ -1398,13 +1264,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetHeaderSpacing()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setHeaderSpacing($optionValue);
         $doc->unsetHeaderSpacing();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--header-spacing', $body->options);
     }
@@ -1416,13 +1280,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetReplace()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = '';
         $doc->setReplace($optionValue);
         $doc->unsetReplace();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--replace', $body->options);
     }
@@ -1434,13 +1296,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetPageOffset()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 30;
         $doc->setPageOffset($optionValue);
         $doc->unsetPageOffset();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--page-offset', $body->options);
     }
@@ -1452,13 +1312,11 @@ class AddingFlagsOptionsTest extends TestCase
      */
     public function testUnsetMinimumFontSize()
     {
-        $doc = new WkhtmltopdfDocument($this->apiClient);
-        $doc->setHtmlMarkup('<body></body>');
+        $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setMinimumFontSize($optionValue);
         $doc->unsetMinimumFontSize();
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-        $body = json_decode($request->getBody()->getContents());
+        $body = $this->getRequestBodyFromDoc($doc);
 
         $this->assertNotContains('--minimum-font-size', $body->options);
     }
