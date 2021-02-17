@@ -28,14 +28,14 @@ class AddingFlagsOptionsTest extends TestCase
 
     /**
      * Create a new instance of WkhtmltopdfDocument and set HTML markup.
-     * 
+     *
      * @return WkhtmltopdfDocument
      */
     protected function getDocumentInstance(): WkhtmltopdfDocument
     {
         $doc = new WkhtmltopdfDocument($this->apiClient);
         $doc->setHtmlMarkup('<body></body>');
-        
+
         return $doc;
     }
 
@@ -49,6 +49,7 @@ class AddingFlagsOptionsTest extends TestCase
     protected function getRequestBodyFromDoc(WkhtmltopdfDocument $doc)
     {
         $request = $doc->getApiClient()->makeRequest($doc->getParams());
+
         return json_decode($request->getBody()->getContents());
     }
 
