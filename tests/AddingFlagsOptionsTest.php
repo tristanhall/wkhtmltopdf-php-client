@@ -8,7 +8,7 @@ use MinuteMan\WkhtmltopdfClient\WkhtmltopdfDocument;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class _AddingFlagsOptionsTest
+ * Class AddingFlagsOptionsTest
  *
  * @package Tests
  */
