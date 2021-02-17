@@ -238,10 +238,17 @@ class WkhtmltopdfDocument
             if (WkhtmltopdfFlag::hasConst($flagOptionName) && count($arguments) === 0) {
                 return $this->addFlag(WkhtmltopdfFlag::$flagOptionName());
             } else {
-                if (WkhtmltopdfOption::hasConst($flagOptionName) && count($arguments) > 0) {
-                    $optionValue = Arr::first($arguments);
+                if (WkhtmltopdfOption::hasConst($flagOptionName)) {
+                    if (count($arguments) === 0) {
+                        throw new InvalidArgumentException(sprintf(
+                            'Error calling %s(). No value provided.',
+                            $name
+                        ));
+                    } else {
+                        $optionValue = Arr::first($arguments);
 
-                    return $this->addOption(WkhtmltopdfOption::$flagOptionName(), $optionValue);
+                        return $this->addOption(WkhtmltopdfOption::$flagOptionName(), $optionValue);
+                    }
                 } else {
                     throw new BadMethodCallException(sprintf('Method %s::%s not found.', __CLASS__, $name));
                 }
@@ -252,10 +259,10 @@ class WkhtmltopdfDocument
                 $flagOptionName = strtoupper(Str::snake(substr($name, 5)));
 
                 // Handle flags in the form of method calls to "unsetFlagNameHere()"
-                if (WkhtmltopdfFlag::hasConst($flagOptionName) && count($arguments) === 0) {
+                if (WkhtmltopdfFlag::hasConst($flagOptionName)) {
                     return $this->removeFlag(WkhtmltopdfFlag::$flagOptionName());
                 } else {
-                    if (WkhtmltopdfOption::hasConst($flagOptionName) && count($arguments) === 0) {
+                    if (WkhtmltopdfOption::hasConst($flagOptionName)) {
                         return $this->removeOption(WkhtmltopdfOption::$flagOptionName());
                     } else {
                         throw new BadMethodCallException(sprintf('Method %s::%s not found.', __CLASS__, $name));
@@ -267,7 +274,7 @@ class WkhtmltopdfDocument
                     $optionName = strtoupper(Str::snake(substr($name, 3)));
 
                     // If the option exists, return the value. Null will be returned if the option is not yet configured.
-                    if (WkhtmltopdfOption::hasConst($optionName) && count($arguments) === 0) {
+                    if (WkhtmltopdfOption::hasConst($optionName)) {
                         return Arr::get($this->options, sprintf('%s.value', WkhtmltopdfOption::$optionName()->value()));
                     } else {
                         throw new BadMethodCallException(sprintf('Method %s::%s not found.', __CLASS__, $name));

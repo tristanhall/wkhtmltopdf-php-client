@@ -1,29 +1,48 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+## Contribution guidelines ##
 
-### What is this repository for? ###
+1. Update the version constant in the `ApiClient` class.
+2. Update the version in `composer.json`
+3. Tag the commit with the same version number.
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+## Requirements ##
+* `php: >=7.4.0`
+* `illuminate/support: >=5.0.0`
+* `illuminate/validation: ^8.22`
+* `guzzlehttp/guzzle: ^7.2`
+* `konekt/enum: ^3.1`
+* `ext-json: *`
 
-### How do I get set up? ###
+## Installing ##
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+`composer require minutemanservices/wkhtmltopdf-php-client`
 
-### Contribution guidelines ###
+### Laravel Setup ###
 
-* Writing tests
-* Code review
-* Other guidelines
+`php artisan vendor:publish --provider=MinuteMan\WkhtmltopdfClient\WkhtmltopdfServiceProvider`
 
-### Who do I talk to? ###
+## Usage ##
 
-* Repo owner or admin
-* Other community or team contact
+### 1. Create a Document ### 
+
+First, create a new instance of the `ApiClient` class and provide the URL of the Wkhtmltopdf microservice API and your access key.
+```php
+$apiClient = new MinuteMan\WkhtmltopdfClient\ApiClient($apiUrl, $apiKey);
+```
+
+Then, create an instance of `WkhtmltopdfDocument` for each PDF you want to generate.
+
+Pass the instance of the `ApiClient` class to the PDF document instance.
+
+```php
+$pdfDocument = new MinuteMan\WkhtmltopdfClient\WkhtmltopdfDocument($apiClient);
+```
+
+### Laravel ###
+
+In Laravel, you can create a document instance without having to create an `ApiClient` instance.
+
+```php
+$pdfDocument = app()->make(MinuteMan\WkhtmltopdfClient\WkhtmltopdfDocument::class);
+```
