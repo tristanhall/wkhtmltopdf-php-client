@@ -366,21 +366,25 @@ class WkhtmltopdfDocument
      * Set the path to the template where the markup resides and any data to include with the view.
      * Throws BadFunctionCallException if the view() helper function is missing.
      *
-     * @param string|null $view
+     * @param string|View|null $view
      * @param array  $data
      * @param array  $mergeData
      * @return $this
      */
-    public function setView(?string $view, array $data = [], array $mergeData = []): self
+    public function setView($view, array $data = [], array $mergeData = []): self
     {
-        if (function_exists('view')) {
+        if ($view instanceof View) {
+            $this->view = $view;
+        } else {
             if (is_null($view)) {
                 $this->view = null;
             } else {
-                $this->view = view($view, $data, $mergeData);
+                if (function_exists('view')) {
+                    $this->view = view($view, $data, $mergeData);
+                } else {
+                    throw new BadFunctionCallException('The view() helper method is missing. Using views to generate HTML markup requires the view() helper method.');
+                }
             }
-        } else {
-            throw new BadFunctionCallException('The view() helper method is missing. Using views to generate HTML markup requires the view() helper method.');
         }
 
         return $this;
