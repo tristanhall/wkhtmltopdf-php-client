@@ -6,7 +6,8 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false">
+         stopOnFailure="false"
+         cacheResult ="false">
     <testsuites>
         <testsuite name="Feature">
             <directory suffix="Test.php">./tests/Feature</directory>
@@ -20,13 +21,4 @@
     <php>
         <ini name="display_errors" value="true"/>
     </php>
-    <logging>
-        <log type="coverage-html"
-             target="./coverage"
-             charset="UTF-8"
-             yui="true"
-             highlight="true"
-             lowUpperBound="50"
-             highLowerBound="80" />
-    </logging>
 </phpunit>
