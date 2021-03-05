@@ -19,7 +19,7 @@ class SetAndRetrieveHtmlMarkupViewUrlTest extends TestCase
     /**
      * @var ApiClient
      */
-    protected $apiClient;
+    protected ApiClient $apiClient;
 
     /**
      * setUp()
@@ -65,14 +65,17 @@ class SetAndRetrieveHtmlMarkupViewUrlTest extends TestCase
 
             public function name()
             {
+                // Empty stub
             }
 
             public function with($key, $value = null)
             {
+                // Empty stub
             }
 
             public function getData()
             {
+                // Empty stub
             }
         };
         $doc = new WkhtmltopdfDocument($this->apiClient);
