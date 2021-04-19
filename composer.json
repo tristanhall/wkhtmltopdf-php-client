@@ -3,7 +3,7 @@
   "description": "PHP Client Library for generating PDFs from HTML using our Wkhtmltopdf Microservice",
   "type": "library",
   "license": "AGPL-3.0-only",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "homepage": "https://bitbucket.org/minutemanservices/wkhtmltopdf-php-client",
   "authors": [
     {

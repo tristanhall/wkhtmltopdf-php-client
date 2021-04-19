@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use JsonException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -614,18 +615,18 @@ class WkhtmltopdfDocument
     /**
      * Creates the API request and sends it. Returns a ResponseInterface object if a 200 status code is received.
      *
-     * @throws GuzzleException
+     * @throws GuzzleException|JsonException
      * @return ResponseInterface
      */
     public function getApiResponse(): ResponseInterface
     {
-        return $this->getApiClient()->sendRequest($this->getParams());
+        return $this->getApiClient()->sendRequest($this->getApiClient()->makeRequest($this->getParams()));
     }
 
     /**
      * Returns a stream resource of the API response content.
      *
-     * @throws GuzzleException
+     * @throws JsonException|GuzzleException
      * @return resource|null
      */
     public function getStream()
@@ -637,7 +638,7 @@ class WkhtmltopdfDocument
      * Request the PDF data and write the stream to a file.
      *
      * @param string $path
-     * @throws GuzzleException
+     * @throws JsonException|GuzzleException
      * @return bool
      */
     public function saveFile(string $path): bool

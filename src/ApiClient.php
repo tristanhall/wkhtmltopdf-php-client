@@ -5,12 +5,10 @@ namespace MinuteMan\WkhtmltopdfClient;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\GuzzleException;
 use Exception;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
-use GuzzleHttp\Utils;
-use Psr\Http\Message\RequestInterface;
+use JsonException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
+use GuzzleHttp\Psr7\Request as Psr7Request;
 
 /**
  * Class ApiClient
@@ -23,7 +21,7 @@ class ApiClient
 
     const USER_AGENT = 'mms-wkhtmltopdf-php-client';
 
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
 
     /**
      * The API URL to use for HTTP requests.
@@ -77,38 +75,35 @@ class ApiClient
         return $this;
     }
 
-    public function getGuzzleStack(): HandlerStack
-    {
-        $stack = new HandlerStack();
-        $stack->setHandler(Utils::chooseHandler());
-
-        $stack->push(Middleware::mapRequest(function (RequestInterface $request) {
-            $request->withHeader('User-Agent', sprintf('%s/%s', self::USER_AGENT, self::VERSION));
-            $request->withHeader('X-Api-Key', $this->apiKey);
-            $request->withHeader('Content-Type', 'application/json');
-            $request->withHeader('Accept', 'application/pdf');
-
-            return $request;
-        }));
-
-        return $stack;
-    }
-
     /**
+     * Creates a Request instance to send to the API.
+     *
      * @param array $postData
-     * @throws GuzzleException|Exception
-     * @return ResponseInterface
+     * @throws JsonException
+     * @return Psr7Request
      */
-    public function sendRequest(array $postData): ResponseInterface
+    public function makeRequest(array $postData): Psr7Request
     {
-        $guzzle = new HttpClient(['handler' => $this->getGuzzleStack()]);
-        $response = $guzzle->request(
+        return new Psr7Request(
             Request::METHOD_POST,
             $this->endpointUrl,
             [
-                'json' => $postData
-            ]
+                'User-Agent' => sprintf('%s/%s', self::USER_AGENT, self::VERSION),
+                'X-Api-Key'  => $this->apiKey,
+                'Accept'     => 'application/pdf',
+            ],
+            json_encode($postData, JSON_THROW_ON_ERROR)
         );
+    }
+
+    /**
+     * @param Psr7Request $request
+     * @throws GuzzleException|Exception
+     * @return ResponseInterface
+     */
+    public function sendRequest(Psr7Request $request): ResponseInterface
+    {
+        $response = (new HttpClient())->send($request);
 
         if ($response->getStatusCode() === 200) {
             return $response;
@@ -117,7 +112,7 @@ class ApiClient
                 'Unexpected Response: %d %s %s',
                 $response->getStatusCode(),
                 $response->getReasonPhrase(),
-                $response->getBody()->getContents()
+                (string)$response->getBody()->getContents()
             ));
         }
     }
