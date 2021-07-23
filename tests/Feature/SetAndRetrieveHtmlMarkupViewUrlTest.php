@@ -27,6 +27,7 @@ class SetAndRetrieveHtmlMarkupViewUrlTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
         $this->apiClient = new ApiClient('https://wkhtmltopdf.local/pdf');
     }
 

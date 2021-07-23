@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use JsonException;
+use Illuminate\Support\Arr;
 use PHPUnit\Framework\TestCase;
 use MinuteMan\WkhtmltopdfClient\ApiClient;
 use MinuteMan\WkhtmltopdfClient\WkhtmltopdfDocument;
@@ -13,14 +13,15 @@ class AddingOptionsTest extends TestCase
     /**
      * @var ApiClient
      */
-    protected $apiClient;
+    protected ApiClient $apiClient;
 
     /**
-     * setUp()
+     *
      */
     public function setUp(): void
     {
         parent::setUp();
+
         $this->apiClient = new ApiClient('https://wkhtmltopdf.local/pdf');
     }
 
@@ -38,561 +39,479 @@ class AddingOptionsTest extends TestCase
     }
 
     /**
-     * Gets the decoded JSON body from the request that a document generates.
-     *
-     * @param WkhtmltopdfDocument $doc
-     * @return mixed
-     * @throws JsonException
-     */
-    protected function getRequestBodyFromDoc(WkhtmltopdfDocument $doc)
-    {
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-
-        return json_decode($request->getBody()->getContents());
-    }
-
-    /**
      * Test for setDpi()
-     *
-     * @throws JsonException
      */
     public function testSetDpi()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 20;
         $doc->setDpi($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--dpi', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--dpi'});
+        $this->assertArrayHasKey('--dpi', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--dpi'));
     }
 
     /**
      * Test for setImageDpi()
-     *
-     * @throws JsonException
      */
     public function testSetImageDpi()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 20;
         $doc->setImageDpi($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--image-dpi', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--image-dpi'});
+        $this->assertArrayHasKey('--image-dpi', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--image-dpi'));
     }
 
     /**
      * Test for setImageQuality()
-     *
-     * @throws JsonException
      */
     public function testSetImageQuality()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 20;
         $doc->setImageQuality($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--image-quality', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--image-quality'});
+        $this->assertArrayHasKey('--image-quality', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--image-quality'));
     }
 
     /**
      * Test for setMarginBottom()
-     *
-     * @throws JsonException
      */
     public function testSetMarginBottom()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setMarginBottom($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--margin-bottom', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--margin-bottom'});
+        $this->assertArrayHasKey('--margin-bottom', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--margin-bottom'));
     }
 
     /**
      * Test for setMarginLeft()
-     *
-     * @throws JsonException
      */
     public function testSetMarginLeft()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setMarginLeft($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--margin-left', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--margin-left'});
+        $this->assertArrayHasKey('--margin-left', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--margin-left'));
     }
 
     /**
      * Test for setMarginTop()
-     *
-     * @throws JsonException
      */
     public function testSetMarginTop()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setMarginTop($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--margin-top', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--margin-top'});
+        $this->assertArrayHasKey('--margin-top', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--margin-top'));
     }
 
     /**
      * Test for setMarginRight()
-     *
-     * @throws JsonException
      */
     public function testSetMarginRight()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setMarginRight($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--margin-right', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--margin-right'});
+        $this->assertArrayHasKey('--margin-right', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--margin-right'));
     }
 
     /**
      * Test for setOrientation()
-     *
-     * @throws JsonException
      */
     public function testSetOrientation()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setOrientation($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--orientation', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--orientation'});
+        $this->assertArrayHasKey('--orientation', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--orientation'));
     }
 
     /**
      * Test for setPageWidth()
-     *
-     * @throws JsonException
      */
     public function testSetPageWidth()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'A1';
         $doc->setPageWidth($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--page-width', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--page-width'});
+        $this->assertArrayHasKey('--page-width', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--page-width'));
     }
 
     /**
      * Test for setPageHeight()
-     *
-     * @throws JsonException
      */
     public function testSetPageHeight()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setPageHeight($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--page-height', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--page-height'});
+        $this->assertArrayHasKey('--page-height', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--page-height'));
     }
 
     /**
      * Test for setPageSize()
-     *
-     * @throws JsonException
      */
     public function testSetPageSize()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'A1';
         $doc->setPageSize($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--page-size', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--page-size'});
+        $this->assertArrayHasKey('--page-size', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--page-size'));
     }
 
     /**
      * Test for setTitle()
-     *
-     * @throws JsonException
      */
     public function testSetTitle()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'Test';
         $doc->setTitle($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--title', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--title'});
+        $this->assertArrayHasKey('--title', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--title'));
     }
 
     /**
      * Test for setEncoding()
-     *
-     * @throws JsonException
      */
     public function testSetEncoding()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'utf-8';
         $doc->setEncoding($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--encoding', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--encoding'});
+        $this->assertArrayHasKey('--encoding', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--encoding'));
     }
 
     /**
      * Test for setJavascriptDelay()
-     *
-     * @throws JsonException
      */
     public function testSetJavascriptDelay()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setJavascriptDelay($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--javascript-delay', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--javascript-delay'});
+        $this->assertArrayHasKey('--javascript-delay', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--javascript-delay'));
     }
 
     /**
      * Test for setUserStyleSheet()
-     *
-     * @throws JsonException
      */
     public function testSetUserStyleSheet()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setUserStyleSheet($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--user-style-sheet', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--user-style-sheet'});
+        $this->assertArrayHasKey('--user-style-sheet', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--user-style-sheet'));
     }
 
     /**
      * Test for setViewportSize()
-     *
-     * @throws JsonException
      */
     public function testSetViewportSize()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = '10';
         $doc->setViewportSize($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--viewport-size', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--viewport-size'});
+        $this->assertArrayHasKey('--viewport-size', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--viewport-size'));
     }
 
     /**
      * Test for setZoom()
-     *
-     * @throws JsonException
      */
     public function testSetZoom()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 50;
         $doc->setZoom($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--zoom', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--zoom'});
+        $this->assertArrayHasKey('--zoom', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--zoom'));
     }
 
     /**
      * Test for setFooterCenter()
-     *
-     * @throws JsonException
      */
     public function testSetFooterCenter()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setFooterCenter($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--footer-center', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--footer-center'});
+        $this->assertArrayHasKey('--footer-center', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--footer-center'));
     }
 
     /**
      * Test for setFooterFontName()
-     *
-     * @throws JsonException
      */
     public function testSetFooterFontName()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setFooterFontName($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--footer-font-name', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--footer-font-name'});
+        $this->assertArrayHasKey('--footer-font-name', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--footer-font-name'));
     }
 
     /**
      * Test for setFooterFontSize()
-     *
-     * @throws JsonException
      */
     public function testSetFooterFontSize()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setFooterFontSize($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--footer-font-size', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--footer-font-size'});
+        $this->assertArrayHasKey('--footer-font-size', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--footer-font-size'));
     }
 
     /**
      * Test for setFooterHtml()
-     *
-     * @throws JsonException
      */
     public function testSetFooterHtml()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = '<body></body>';
         $doc->setFooterHtml($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--footer-html', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--footer-html'});
+        $this->assertArrayHasKey('--footer-html', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--footer-html'));
     }
 
     /**
      * Test for setFooterLeft()
-     *
-     * @throws JsonException
      */
     public function testSetFooterLeft()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'Test';
         $doc->setFooterLeft($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--footer-left', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--footer-left'});
+        $this->assertArrayHasKey('--footer-left', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--footer-left'));
     }
 
     /**
      * Test for setFooterRight()
-     *
-     * @throws JsonException
      */
     public function testSetFooterRight()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setFooterRight($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--footer-right', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--footer-right'});
+        $this->assertArrayHasKey('--footer-right', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--footer-right'));
     }
 
     /**
      * Test for setFooterSpacing()
-     *
-     * @throws JsonException
      */
     public function testSetFooterSpacing()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setFooterSpacing($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--footer-spacing', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--footer-spacing'});
+        $this->assertArrayHasKey('--footer-spacing', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--footer-spacing'));
     }
 
     /**
      * Test for setHeaderCenter()
-     *
-     * @throws JsonException
      */
     public function testSetHeaderCenter()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setHeaderCenter($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--header-center', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--header-center'});
+        $this->assertArrayHasKey('--header-center', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--header-center'));
     }
 
     /**
      * Test for setHeaderFontName()
-     *
-     * @throws JsonException
      */
     public function testSetHeaderFontName()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setHeaderFontName($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--header-font-name', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--header-font-name'});
+        $this->assertArrayHasKey('--header-font-name', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--header-font-name'));
     }
 
     /**
      * Test for setHeaderFontSize()
-     *
-     * @throws JsonException
      */
     public function testSetHeaderFontSize()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setHeaderFontSize($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--header-font-size', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--header-font-size'});
+        $this->assertArrayHasKey('--header-font-size', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--header-font-size'));
     }
 
     /**
      * Test for setHeaderHtml()
-     *
-     * @throws JsonException
      */
     public function testSetHeaderHtml()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = '<body></body>';
         $doc->setHeaderHtml($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--header-html', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--header-html'});
+        $this->assertArrayHasKey('--header-html', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--header-html'));
     }
 
     /**
      * Test for setHeaderLeft()
-     *
-     * @throws JsonException
      */
     public function testSetHeaderLeft()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setHeaderLeft($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--header-left', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--header-left'});
+        $this->assertArrayHasKey('--header-left', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--header-left'));
     }
 
     /**
      * Test for setHeaderRight()
-     *
-     * @throws JsonException
      */
     public function testSetHeaderRight()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 'null';
         $doc->setHeaderRight($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--header-right', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--header-right'});
+        $this->assertArrayHasKey('--header-right', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--header-right'));
     }
 
     /**
      * Test for setHeaderSpacing()
-     *
-     * @throws JsonException
      */
     public function testSetHeaderSpacing()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setHeaderSpacing($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--header-spacing', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--header-spacing'});
+        $this->assertArrayHasKey('--header-spacing', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--header-spacing'));
     }
 
     /**
      * Test for setReplace()
-     *
-     * @throws JsonException
      */
     public function testSetReplace()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = '';
         $doc->setReplace($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--replace', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--replace'});
+        $this->assertArrayHasKey('--replace', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--replace'));
     }
 
     /**
      * Test for setPageOffset()
-     *
-     * @throws JsonException
      */
     public function testSetPageOffset()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 30;
         $doc->setPageOffset($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--page-offset', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--page-offset'});
+        $this->assertArrayHasKey('--page-offset', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--page-offset'));
     }
 
     /**
      * Test for setMinimumFontSize()
-     *
-     * @throws JsonException
      */
     public function testSetMinimumFontSize()
     {
         $doc = $this->getDocumentInstance();
         $optionValue = 10;
         $doc->setMinimumFontSize($optionValue);
-        $body = $this->getRequestBodyFromDoc($doc);
+        $options = Arr::get($doc->getParams(), 'options', []);
 
-        $this->assertObjectHasAttribute('--minimum-font-size', $body->options);
-        $this->assertEquals($optionValue, $body->options->{'--minimum-font-size'});
+        $this->assertArrayHasKey('--minimum-font-size', $options);
+        $this->assertEquals($optionValue, Arr::get($options, '--minimum-font-size'));
     }
 
 }

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use JsonException;
+use Illuminate\Support\Arr;
 use MinuteMan\WkhtmltopdfClient\ApiClient;
 use MinuteMan\WkhtmltopdfClient\WkhtmltopdfDocument;
 use PHPUnit\Framework\TestCase;
@@ -18,14 +18,14 @@ class RemovingOptionsTest extends TestCase
     /**
      * @var ApiClient
      */
-    protected $apiClient;
+    protected ApiClient $apiClient;
 
     /**
-     * setUp()
      */
     public function setUp(): void
     {
         parent::setUp();
+
         $this->apiClient = new ApiClient('https://wkhtmltopdf.local/pdf');
     }
 
@@ -43,23 +43,7 @@ class RemovingOptionsTest extends TestCase
     }
 
     /**
-     * Gets the decoded JSON body from the request that a document generates.
-     *
-     * @param WkhtmltopdfDocument $doc
-     * @return mixed
-     * @throws JsonException
-     */
-    protected function getRequestBodyFromDoc(WkhtmltopdfDocument $doc)
-    {
-        $request = $doc->getApiClient()->makeRequest($doc->getParams());
-
-        return json_decode($request->getBody()->getContents());
-    }
-
-    /**
      * Test for unsetDpi()
-     *
-     * @throws JsonException
      */
     public function testUnsetDpi()
     {
@@ -67,15 +51,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 20;
         $doc->setDpi($optionValue);
         $doc->unsetDpi();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--dpi', $body->options);
+        
+        $this->assertArrayNotHasKey('--dpi', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetImageDpi()
-     *
-     * @throws JsonException
      */
     public function testUnsetImageDpi()
     {
@@ -83,15 +64,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 20;
         $doc->setImageDpi($optionValue);
         $doc->unsetImageDpi();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--image-dpi', $body->options);
+        
+        $this->assertArrayNotHasKey('--image-dpi', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetImageQuality()
-     *
-     * @throws JsonException
      */
     public function testUnsetImageQuality()
     {
@@ -99,15 +77,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 20;
         $doc->setImageQuality($optionValue);
         $doc->unsetImageQuality();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--image-quality', $body->options);
+        
+        $this->assertArrayNotHasKey('--image-quality', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetMarginBottom()
-     *
-     * @throws JsonException
      */
     public function testUnsetMarginBottom()
     {
@@ -115,15 +90,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = '10';
         $doc->setMarginBottom($optionValue);
         $doc->unsetMarginBottom();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--margin-bottom', $body->options);
+        
+        $this->assertArrayNotHasKey('--margin-bottom', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetMarginLeft()
-     *
-     * @throws JsonException
      */
     public function testUnsetMarginLeft()
     {
@@ -131,15 +103,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = '10';
         $doc->setMarginLeft($optionValue);
         $doc->unsetMarginLeft();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--margin-left', $body->options);
+        
+        $this->assertArrayNotHasKey('--margin-left', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetMarginTop()
-     *
-     * @throws JsonException
      */
     public function testUnsetMarginTop()
     {
@@ -147,15 +116,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = '10';
         $doc->setMarginTop($optionValue);
         $doc->unsetMarginTop();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--margin-top', $body->options);
+        
+        $this->assertArrayNotHasKey('--margin-top', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetMarginRight()
-     *
-     * @throws JsonException
      */
     public function testUnsetMarginRight()
     {
@@ -163,15 +129,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = '10';
         $doc->setMarginRight($optionValue);
         $doc->unsetMarginRight();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--margin-right', $body->options);
+        
+        $this->assertArrayNotHasKey('--margin-right', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetOrientation()
-     *
-     * @throws JsonException
      */
     public function testUnsetOrientation()
     {
@@ -179,15 +142,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'null';
         $doc->setOrientation($optionValue);
         $doc->unsetOrientation();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--orientation', $body->options);
+        
+        $this->assertArrayNotHasKey('--orientation', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetPageWidth()
-     *
-     * @throws JsonException
      */
     public function testUnsetPageWidth()
     {
@@ -195,15 +155,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'A1';
         $doc->setPageWidth($optionValue);
         $doc->unsetPageWidth();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--page-width', $body->options);
+        
+        $this->assertArrayNotHasKey('--page-width', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetPageHeight()
-     *
-     * @throws JsonException
      */
     public function testUnsetPageHeight()
     {
@@ -211,15 +168,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = '10';
         $doc->setPageHeight($optionValue);
         $doc->unsetPageHeight();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--page-height', $body->options);
+        
+        $this->assertArrayNotHasKey('--page-height', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetPageSize()
-     *
-     * @throws JsonException
      */
     public function testUnsetPageSize()
     {
@@ -227,15 +181,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'A1';
         $doc->setPageSize($optionValue);
         $doc->unsetPageSize();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--page-size', $body->options);
+        
+        $this->assertArrayNotHasKey('--page-size', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetTitle()
-     *
-     * @throws JsonException
      */
     public function testUnsetTitle()
     {
@@ -243,15 +194,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'Test';
         $doc->setTitle($optionValue);
         $doc->unsetTitle();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--title', $body->options);
+        
+        $this->assertArrayNotHasKey('--title', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetEncoding()
-     *
-     * @throws JsonException
      */
     public function testUnsetEncoding()
     {
@@ -259,15 +207,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'utf-8';
         $doc->setEncoding($optionValue);
         $doc->unsetEncoding();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--encoding', $body->options);
+        
+        $this->assertArrayNotHasKey('--encoding', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetJavascriptDelay()
-     *
-     * @throws JsonException
      */
     public function testUnsetJavascriptDelay()
     {
@@ -275,15 +220,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 10;
         $doc->setJavascriptDelay($optionValue);
         $doc->unsetJavascriptDelay();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--javascript-delay', $body->options);
+        
+        $this->assertArrayNotHasKey('--javascript-delay', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetUserStyleSheet()
-     *
-     * @throws JsonException
      */
     public function testUnsetUserStyleSheet()
     {
@@ -291,15 +233,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'null';
         $doc->setUserStyleSheet($optionValue);
         $doc->unsetUserStyleSheet();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--user-style-sheet', $body->options);
+        
+        $this->assertArrayNotHasKey('--user-style-sheet', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetViewportSize()
-     *
-     * @throws JsonException
      */
     public function testUnsetViewportSize()
     {
@@ -307,15 +246,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = '10';
         $doc->setViewportSize($optionValue);
         $doc->unsetViewportSize();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--viewport-size', $body->options);
+        
+        $this->assertArrayNotHasKey('--viewport-size', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetZoom()
-     *
-     * @throws JsonException
      */
     public function testUnsetZoom()
     {
@@ -323,15 +259,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 50;
         $doc->setZoom($optionValue);
         $doc->unsetZoom();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--zoom', $body->options);
+        
+        $this->assertArrayNotHasKey('--zoom', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetFooterCenter()
-     *
-     * @throws JsonException
      */
     public function testUnsetFooterCenter()
     {
@@ -339,15 +272,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'null';
         $doc->setFooterCenter($optionValue);
         $doc->unsetFooterCenter();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--footer-center', $body->options);
+        
+        $this->assertArrayNotHasKey('--footer-center', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetFooterFontName()
-     *
-     * @throws JsonException
      */
     public function testUnsetFooterFontName()
     {
@@ -355,15 +285,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'null';
         $doc->setFooterFontName($optionValue);
         $doc->unsetFooterFontName();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--footer-font-name', $body->options);
+        
+        $this->assertArrayNotHasKey('--footer-font-name', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetFooterFontSize()
-     *
-     * @throws JsonException
      */
     public function testUnsetFooterFontSize()
     {
@@ -371,15 +298,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 10;
         $doc->setFooterFontSize($optionValue);
         $doc->unsetFooterFontSize();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--footer-font-size', $body->options);
+        
+        $this->assertArrayNotHasKey('--footer-font-size', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetFooterHtml()
-     *
-     * @throws JsonException
      */
     public function testUnsetFooterHtml()
     {
@@ -387,15 +311,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = '<body></body>';
         $doc->setFooterHtml($optionValue);
         $doc->unsetFooterHtml();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--footer-html', $body->options);
+        
+        $this->assertArrayNotHasKey('--footer-html', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetFooterLeft()
-     *
-     * @throws JsonException
      */
     public function testUnsetFooterLeft()
     {
@@ -403,15 +324,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'Test';
         $doc->setFooterLeft($optionValue);
         $doc->unsetFooterLeft();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--footer-left', $body->options);
+        
+        $this->assertArrayNotHasKey('--footer-left', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetFooterRight()
-     *
-     * @throws JsonException
      */
     public function testUnsetFooterRight()
     {
@@ -419,15 +337,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'null';
         $doc->setFooterRight($optionValue);
         $doc->unsetFooterRight();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--footer-right', $body->options);
+        
+        $this->assertArrayNotHasKey('--footer-right', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetFooterSpacing()
-     *
-     * @throws JsonException
      */
     public function testUnsetFooterSpacing()
     {
@@ -435,15 +350,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 10;
         $doc->setFooterSpacing($optionValue);
         $doc->unsetFooterSpacing();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--footer-spacing', $body->options);
+        
+        $this->assertArrayNotHasKey('--footer-spacing', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetHeaderCenter()
-     *
-     * @throws JsonException
      */
     public function testUnsetHeaderCenter()
     {
@@ -451,15 +363,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'null';
         $doc->setHeaderCenter($optionValue);
         $doc->unsetHeaderCenter();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--header-center', $body->options);
+        
+        $this->assertArrayNotHasKey('--header-center', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetHeaderFontName()
-     *
-     * @throws JsonException
      */
     public function testUnsetHeaderFontName()
     {
@@ -467,15 +376,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'null';
         $doc->setHeaderFontName($optionValue);
         $doc->unsetHeaderFontName();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--header-font-name', $body->options);
+        
+        $this->assertArrayNotHasKey('--header-font-name', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetHeaderFontSize()
-     *
-     * @throws JsonException
      */
     public function testUnsetHeaderFontSize()
     {
@@ -483,15 +389,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 10;
         $doc->setHeaderFontSize($optionValue);
         $doc->unsetHeaderFontSize();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--header-font-size', $body->options);
+        
+        $this->assertArrayNotHasKey('--header-font-size', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetHeaderHtml()
-     *
-     * @throws JsonException
      */
     public function testUnsetHeaderHtml()
     {
@@ -499,15 +402,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = '<body></body>';
         $doc->setHeaderHtml($optionValue);
         $doc->unsetHeaderHtml();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--header-html', $body->options);
+        
+        $this->assertArrayNotHasKey('--header-html', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetHeaderLeft()
-     *
-     * @throws JsonException
      */
     public function testUnsetHeaderLeft()
     {
@@ -515,15 +415,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'null';
         $doc->setHeaderLeft($optionValue);
         $doc->unsetHeaderLeft();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--header-left', $body->options);
+        
+        $this->assertArrayNotHasKey('--header-left', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetHeaderRight()
-     *
-     * @throws JsonException
      */
     public function testUnsetHeaderRight()
     {
@@ -531,15 +428,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 'null';
         $doc->setHeaderRight($optionValue);
         $doc->unsetHeaderRight();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--header-right', $body->options);
+        
+        $this->assertArrayNotHasKey('--header-right', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetHeaderSpacing()
-     *
-     * @throws JsonException
      */
     public function testUnsetHeaderSpacing()
     {
@@ -547,15 +441,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 10;
         $doc->setHeaderSpacing($optionValue);
         $doc->unsetHeaderSpacing();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--header-spacing', $body->options);
+        
+        $this->assertArrayNotHasKey('--header-spacing', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetReplace()
-     *
-     * @throws JsonException
      */
     public function testUnsetReplace()
     {
@@ -563,15 +454,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = '';
         $doc->setReplace($optionValue);
         $doc->unsetReplace();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--replace', $body->options);
+        
+        $this->assertArrayNotHasKey('--replace', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetPageOffset()
-     *
-     * @throws JsonException
      */
     public function testUnsetPageOffset()
     {
@@ -579,15 +467,12 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 30;
         $doc->setPageOffset($optionValue);
         $doc->unsetPageOffset();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--page-offset', $body->options);
+        
+        $this->assertArrayNotHasKey('--page-offset', Arr::get($doc->getParams(), 'options', []));
     }
 
     /**
      * Test for unsetMinimumFontSize()
-     *
-     * @throws JsonException
      */
     public function testUnsetMinimumFontSize()
     {
@@ -595,9 +480,8 @@ class RemovingOptionsTest extends TestCase
         $optionValue = 10;
         $doc->setMinimumFontSize($optionValue);
         $doc->unsetMinimumFontSize();
-        $body = $this->getRequestBodyFromDoc($doc);
-
-        $this->assertNotContains('--minimum-font-size', $body->options);
+        
+        $this->assertArrayNotHasKey('--minimum-font-size', Arr::get($doc->getParams(), 'options', []));
     }
 
 }

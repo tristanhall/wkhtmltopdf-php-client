@@ -2,8 +2,6 @@
 
 namespace MinuteMan\WkhtmltopdfClient;
 
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -33,16 +31,13 @@ class WkhtmltopdfServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(ApiClient::class, function () {
-            return new ApiClient(
-                Config::get('minuteman_wkhtmltopdf_client.endpoint_url', ''),
-                Config::get('minuteman_wkhtmltopdf_client.api_key', '')
-            );
-        });
+        $this->app->when(ApiClient::class)
+                  ->needs('$endpointUrl')
+                  ->giveConfig('minuteman_wkhtmltopdf_client.endpoint_url');
 
-        $this->app->bind(WkhtmltopdfDocument::class, function (Application $app) {
-            return new WkhtmltopdfDocument($app->make(ApiClient::class));
-        });
+        $this->app->when(ApiClient::class)
+                  ->needs('$apiKey')
+                  ->giveConfig('minuteman_wkhtmltopdf_client.api_key');
     }
 
     /**
@@ -52,7 +47,10 @@ class WkhtmltopdfServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return [WkhtmltopdfDocument::class];
+        return [
+            ApiClient::class,
+            WkhtmltopdfDocument::class,
+        ];
     }
 
 }

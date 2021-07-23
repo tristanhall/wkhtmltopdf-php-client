@@ -2,13 +2,11 @@
 
 namespace MinuteMan\WkhtmltopdfClient;
 
-use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Exception;
-use JsonException;
+use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\HttpFoundation\Request;
-use GuzzleHttp\Psr7\Request as Psr7Request;
 
 /**
  * Class ApiClient
@@ -21,7 +19,7 @@ class ApiClient
 
     const USER_AGENT = 'mms-wkhtmltopdf-php-client';
 
-    const VERSION = '1.0.3';
+    const VERSION = '1.0.4';
 
     /**
      * The API URL to use for HTTP requests.
@@ -76,34 +74,30 @@ class ApiClient
     }
 
     /**
-     * Creates a Request instance to send to the API.
+     * Returns the options to apply to the HTTP request.
      *
-     * @param array $postData
-     * @throws JsonException
-     * @return Psr7Request
+     * @return array
      */
-    public function makeRequest(array $postData): Psr7Request
+    public function getRequestHeaders(): array
     {
-        return new Psr7Request(
-            Request::METHOD_POST,
-            $this->endpointUrl,
-            [
-                'User-Agent' => sprintf('%s/%s', self::USER_AGENT, self::VERSION),
-                'X-Api-Key'  => $this->apiKey,
-                'Accept'     => 'application/pdf',
-            ],
-            json_encode($postData, JSON_THROW_ON_ERROR)
-        );
+        return [
+            'User-Agent' => sprintf('%s/%s', self::USER_AGENT, self::VERSION),
+            'X-Api-Key'  => $this->apiKey,
+            'Accept'     => 'application/pdf',
+        ];
     }
 
     /**
-     * @param Psr7Request $request
+     * @param array $postData
      * @throws GuzzleException|Exception
      * @return ResponseInterface
      */
-    public function sendRequest(Psr7Request $request): ResponseInterface
+    public function sendRequest(array $postData): ResponseInterface
     {
-        $response = (new HttpClient())->send($request);
+        $response = (new Client())->post($this->endpointUrl, [
+            RequestOptions::HEADERS => $this->getRequestHeaders(),
+            RequestOptions::JSON => json_encode($postData, JSON_THROW_ON_ERROR),
+        ]);
 
         if ($response->getStatusCode() === 200) {
             return $response;
@@ -112,7 +106,7 @@ class ApiClient
                 'Unexpected Response: %d %s %s',
                 $response->getStatusCode(),
                 $response->getReasonPhrase(),
-                (string)$response->getBody()->getContents()
+                $response->getBody()->getContents()
             ));
         }
     }
