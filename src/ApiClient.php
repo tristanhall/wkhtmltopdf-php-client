@@ -96,7 +96,7 @@ class ApiClient
     {
         $response = (new Client())->post($this->endpointUrl, [
             RequestOptions::HEADERS => $this->getRequestHeaders(),
-            RequestOptions::JSON => json_encode($postData, JSON_THROW_ON_ERROR),
+            RequestOptions::JSON    => $postData,
         ]);
 
         if ($response->getStatusCode() === 200) {
