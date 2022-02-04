@@ -2,7 +2,7 @@ pipelines:
   branches:
     main:
       - step:
-          name: Run Unit Tests
+          name: Production Unit Tests
           deployment: Production
           image: composer:2.2.5
           caches:
@@ -12,7 +12,7 @@ pipelines:
             - vendor/bin/phpunit --testdox
     develop:
       - step:
-          name: Deploy to AWS
+          name: Development Unit Tests
           deployment: Test
           image: composer:2.2.5
           caches:
