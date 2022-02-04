@@ -4,19 +4,19 @@ pipelines:
       - step:
           name: Run Unit Tests
           deployment: Production
-          image: ubuntu:20.04
+          image: composer:2.2.5
           caches:
             - composer
           script:
-            - bash ./bin/pipelines/install_dependencies.sh
+            - composer install -oqn --no-progress
             - vendor/bin/phpunit --testdox
     develop:
       - step:
           name: Deploy to AWS
           deployment: Test
-          image: ubuntu:20.04
+          image: composer:2.2.5
           caches:
             - composer
           script:
-            - bash ./bin/pipelines/install_dependencies.sh
+            - composer install -oqn --no-progress
             - vendor/bin/phpunit --testdox
