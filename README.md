@@ -46,5 +46,3 @@ In Laravel, you can create a document instance without having to create an `ApiC
 ```php
 $pdfDocument = app()->make(MinuteMan\WkhtmltopdfClient\WkhtmltopdfDocument::class);
 ```
-
-## Publishing Changes ##
